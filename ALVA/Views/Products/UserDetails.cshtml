@@ -1,0 +1,30 @@
+@model ALVA.Models.Product
+
+@{
+    ViewData["Title"] = "Подробности о товаре";
+}
+
+<h2>@Model.Name</h2>
+
+<dl class="row">
+    <dt class = "col-sm-2">
+        Описание
+    </dt>
+    <dd class = "col-sm-10">
+        @Model.Description
+    </dd>
+    <dt class = "col-sm-2">
+        Цена
+    </dt>
+    <dd class = "col-sm-10">
+        @Model.Price.ToString("0.00")
+    </dd>
+    <dt class = "col-sm-2">
+            Категория товара
+        </dt>
+    <dd class = "col-sm-10">
+        @Model.Category
+    </dd>
+</dl>
+
+<a href="@Url.Action("Index", "Home")" class="btn btn-primary">На главную страницу</a>

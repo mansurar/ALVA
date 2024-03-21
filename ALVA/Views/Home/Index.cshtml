@@ -1,0 +1,119 @@
+﻿@model IEnumerable<ALVA.Models.Product>
+
+@{
+    ViewData["Title"] = "Products Catalog";
+}
+
+<style>
+    .product-card {
+        margin-bottom: 20px;
+        height: 100%;
+    }
+
+    .product-image-container {
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .product-image {
+        max-width: 100%;
+        max-height: 100%;
+        display: block;
+        margin: auto;
+    }
+
+    .product-details {
+        padding: 10px;
+    }
+
+    .product-price {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .btn-details {
+        flex-grow: 1;
+        margin-right: 10px;
+    }
+
+    .admin-buttons {
+        margin-top: 10px;
+    }
+</style>
+
+<h2>Products Catalog</h2>
+
+<div class="row">
+    @foreach (var product in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-4 box-shadow product-card">
+                <div class="product-image-container">
+                    <img class="card-img-top product-image" src="@product.ImageUrl" alt="Product image">
+                </div>
+                <div class="card-body product-details">
+                    <p class="card-text">@product.Name</p>
+                    <p class="card-text">@product.Description</p>
+                    <p class="card-text product-price">$@product.Price.ToString("0.00")</p>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="admin-buttons">
+                            <a href="/Products/Edit/@product.Id" class="btn btn-sm btn-outline-secondary">Изменить</a>
+                            <a href="/Products/Delete/@product.Id" class="btn btn-sm btn-outline-danger">Удалить</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="btn-container">
+                            <a href="@Url.Action("Details", "Products", new { id = product.Id })" class="btn btn-primary btn-details">Детали</a>
+                            <form method="post" action="@Url.Action("AddToCart", "Cart")">
+                                <input type="hidden" name="productId" value="@product.Id" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn btn-success">Добавить в корзину</button>
+                            </form>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $('.product-image').on('load', function () {
+            $(this).css('height', $(this).parent().height());
+        });
+        
+        $(function () {
+            $('.product-card form').submit(function (event) {
+                event.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (response) {
+                        alert('Товар успешно добавлен в корзину!');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert('Произошла ошибка при добавлении товара в корзину.');
+                    }
+                });
+            });
+        });
+
+    </script>
+}

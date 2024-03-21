@@ -1,0 +1,116 @@
+@model IEnumerable<ALVA.Models.Product>
+
+@{
+    ViewData["Title"] = "Страница администрирования товаров";
+}
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        transition: background-color 0.3s ease;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .btn {
+        font-size: 14px;
+        padding: 8px 16px;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .action-links a {
+        margin-right: 5px;
+        color: #f1f1f1;
+        text-decoration: none;
+    }
+
+    .action-links a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+<table id="productTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>ImageUrl</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@Html.DisplayFor(modelItem => item.Category)</td>
+                <td>@Html.DisplayFor(modelItem => item.ImageUrl)</td>
+                <td class="action-links">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        function resizeTableCells() {
+            var table = document.getElementById("productTable");
+            var maxWidth = 0;
+            for (var i = 0; i < table.rows[0].cells.length; i++) {
+                var cellWidth = table.rows[0].cells[i].offsetWidth;
+                if (cellWidth > maxWidth) {
+                    maxWidth = cellWidth;
+                }
+            }
+            for (var i = 0; i < table.rows.length; i++) {
+                for (var j = 0; j < table.rows[i].cells.length; j++) {
+                    table.rows[i].cells[j].style.width = maxWidth + "px";
+                }
+            }
+        }
+        window.onload = resizeTableCells;
+
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('mouseover', function () {
+                this.style.backgroundColor = '#f5f5f5';
+            });
+            row.addEventListener('mouseout', function () {
+                this.style.backgroundColor = 'transparent';
+            });
+        });
+    </script>
+}
